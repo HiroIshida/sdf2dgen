@@ -1,7 +1,9 @@
 #include "sdf.hpp"
 
-double compute_distance(const Vector2d &p, const Vector2d &v0,
-                        const Vector2d &v1) {
+namespace sdf {
+
+double compute_distance(const Eigen::Vector2d &p, const Eigen::Vector2d &v0,
+                        const Eigen::Vector2d &v1) {
   const auto diff = v1 - v0;
   const double t = (p - v0).dot(diff) / diff.dot(diff);
   if (t < 0.0) {
@@ -13,7 +15,7 @@ double compute_distance(const Vector2d &p, const Vector2d &v0,
   }
 }
 
-double compute_distance(const Vector2d &p, const Vertices &verts) {
+double compute_distance(const Eigen::Vector2d &p, const Vertices &verts) {
   double min_dist = std::numeric_limits<double>::infinity();
   for (size_t i = 0; i < verts.size(); ++i) {
     double dist_cand;
@@ -29,7 +31,7 @@ double compute_distance(const Vector2d &p, const Vertices &verts) {
   return min_dist;
 }
 
-double compute_distance(const Vector2d &p,
+double compute_distance(const Eigen::Vector2d &p,
                         const std::vector<Vertices> &verts_list) {
   double min_dist = std::numeric_limits<double>::infinity();
   for (const auto &verts : verts_list) {
@@ -41,17 +43,17 @@ double compute_distance(const Vector2d &p,
   return min_dist;
 }
 
-std::optional<double> find_intersection_coef(const Vector2d &p0,
-                                             const Vector2d &p1,
-                                             const Vector2d &q0,
-                                             const Vector2d &q1) {
+std::optional<double> find_intersection_coef(const Eigen::Vector2d &p0,
+                                             const Eigen::Vector2d &p1,
+                                             const Eigen::Vector2d &q0,
+                                             const Eigen::Vector2d &q1) {
   // when we have p0 + s * (p1 - p0), q0 + t * (q1 - q0), this function returns
   // s
-  const Vector2d &e = p1 - p0;
-  const Vector2d &f = q1 - q0;
-  Matrix2d m;
+  const Eigen::Vector2d &e = p1 - p0;
+  const Eigen::Vector2d &f = q1 - q0;
+  Eigen::Matrix2d m;
   m << -e(0), f(0), -e(1), f(1);
-  Vector2d v;
+  Eigen::Vector2d v;
   v << f(0), -f(1);
 
   const double det = m.determinant();
@@ -71,7 +73,7 @@ std::optional<double> find_intersection_coef(const Vector2d &p0,
 }
 
 std::vector<double>
-find_intersection_coefs(const Vector2d &p0, const Vector2d &p1,
+find_intersection_coefs(const Eigen::Vector2d &p0, const Eigen::Vector2d &p1,
                         const std::vector<Vertices> &verts_list) {
   std::vector<double> coefs;
   for (const auto &verts : verts_list) {
@@ -91,13 +93,14 @@ find_intersection_coefs(const Vector2d &p0, const Vector2d &p1,
   return coefs;
 }
 
-MatrixXd compute_sdf(const Vector2d &lb, const Vector2d &ub, size_t nx,
-                     size_t ny, const std::vector<Vertices> &verts_list,
-                     bool make_signed) {
+Eigen::MatrixXd compute_sdf(const Eigen::Vector2d &lb,
+                            const Eigen::Vector2d &ub, size_t nx, size_t ny,
+                            const std::vector<Vertices> &verts_list,
+                            bool make_signed) {
   const auto &width = ub - lb;
   const double wx = width(0) / nx;
   const double wy = width(1) / ny;
-  MatrixXd mat(nx + 1, ny + 1);
+  Eigen::MatrixXd mat(nx + 1, ny + 1);
   for (size_t i = 0; i < nx + 1; ++i) {
     for (size_t j = 0; j < ny + 1; ++j) {
       auto p = lb;
@@ -138,3 +141,5 @@ MatrixXd compute_sdf(const Vector2d &lb, const Vector2d &ub, size_t nx,
   }
   return mat;
 }
+
+} // namespace sdf

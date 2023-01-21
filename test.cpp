@@ -3,8 +3,10 @@
 #include <Eigen/LU>
 #include <gtest/gtest.h>
 
+using namespace sdf;
+
 TEST(TEST_COMPUTE_DISTANCE_EACH, AllTest) {
-  Vector2d v0, v1, p;
+  Eigen::Vector2d v0, v1, p;
   v0 << 0, 0;
   v1 << 1.0, 0.0;
 
@@ -19,12 +21,12 @@ TEST(TEST_COMPUTE_DISTANCE_EACH, AllTest) {
 }
 
 TEST(TEST_COMPUTE_DISTANCE_BATCH, AllTest) {
-  Vector2d v0, v1, v2, v3, p;
+  Eigen::Vector2d v0, v1, v2, v3, p;
   v0 << 0, 0;
   v1 << 1.0, 0.0;
   v2 << 1.0, 1.0;
   v3 << 0.0, 1.0;
-  auto verts = std::vector<Vector2d>{v0, v1, v2, v3};
+  auto verts = std::vector<Eigen::Vector2d>{v0, v1, v2, v3};
 
   p << 0.0, 0.0;
   ASSERT_NEAR(compute_distance(p, verts), 0.0, 1e-6);
@@ -40,7 +42,7 @@ TEST(TEST_COMPUTE_DISTANCE_BATCH, AllTest) {
 }
 
 TEST(TEST_FIND_INTERSECTION_COEF, AllTest) {
-  Vector2d p0, p1, q0, q1;
+  Eigen::Vector2d p0, p1, q0, q1;
   p0 << 0, 0;
   p1 << 1., 0.0;
   q0 << 0.5, -0.5;
@@ -68,15 +70,15 @@ TEST(TEST_FIND_INTERSECTION_COEF, AllTest) {
 }
 
 TEST(TEST_FIND_INTERSECTION_COEFS, AllTest) {
-  Vector2d v0, v1, v2, v3;
+  Eigen::Vector2d v0, v1, v2, v3;
   v0 << 0, 0;
   v1 << 1.0, 0.0;
   v2 << 1.0, 1.0;
   v3 << 0.0, 1.0;
-  auto verts = std::vector<Vector2d>{v0, v1, v2, v3};
+  auto verts = std::vector<Eigen::Vector2d>{v0, v1, v2, v3};
 
   {
-    Vector2d p0, p1;
+    Eigen::Vector2d p0, p1;
     p0 << -0.5, 0.5;
     p1 << 1.5, 0.5;
     auto coefs = find_intersection_coefs(p0, p1, std::vector<Vertices>{verts});
@@ -86,7 +88,7 @@ TEST(TEST_FIND_INTERSECTION_COEFS, AllTest) {
   }
 
   {
-    Vector2d p0, p1;
+    Eigen::Vector2d p0, p1;
     p0 << -0.5, -0.5;
     p1 << 1.5, -0.5;
     auto coefs = find_intersection_coefs(p0, p1, std::vector<Vertices>{verts});
@@ -94,7 +96,7 @@ TEST(TEST_FIND_INTERSECTION_COEFS, AllTest) {
   }
 
   {
-    Vector2d p0, p1;
+    Eigen::Vector2d p0, p1;
     p0 << -0.5, 0.5;
     p1 << 0.5, 0.5;
     auto coefs = find_intersection_coefs(p0, p1, std::vector<Vertices>{verts});
@@ -104,7 +106,7 @@ TEST(TEST_FIND_INTERSECTION_COEFS, AllTest) {
   }
 
   {
-    Vector2d p0, p1;
+    Eigen::Vector2d p0, p1;
     p0 << -1.0, -1.0;
     p1 << 3.0, 3.0;
     auto coefs = find_intersection_coefs(p0, p1, std::vector<Vertices>{verts});
@@ -114,7 +116,7 @@ TEST(TEST_FIND_INTERSECTION_COEFS, AllTest) {
   }
 
   {
-    Vector2d p0, p1;
+    Eigen::Vector2d p0, p1;
     p0 << -1.0, 0.0;
     p1 << 3.0, 1.0;
     auto coefs = find_intersection_coefs(p0, p1, std::vector<Vertices>{verts});
@@ -125,13 +127,13 @@ TEST(TEST_FIND_INTERSECTION_COEFS, AllTest) {
 }
 
 TEST(TEST_COMPUTE_SDF, AllTest) {
-  Vector2d v0, v1, v2, v3;
+  Eigen::Vector2d v0, v1, v2, v3;
   v0 << 0.25, 0.25;
   v1 << 0.75, 0.25;
   v2 << 0.75, 0.75;
   v3 << 0.25, 0.75;
-  auto verts = std::vector<Vector2d>{v0, v1, v2, v3};
-  Vector2d lb, ub;
+  auto verts = std::vector<Eigen::Vector2d>{v0, v1, v2, v3};
+  Eigen::Vector2d lb, ub;
   lb << 0., 0.;
   ub << 1., 1.;
   size_t nx = 10;
