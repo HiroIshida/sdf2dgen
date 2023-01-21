@@ -1,14 +1,4 @@
-#include <Eigen/Core>
-#include <Eigen/LU>
-#include <iostream>
-#include <limits>
-#include <optional>
-#include <vector>
-
-using Vector2d = Eigen::Vector2d;
-using Matrix2d = Eigen::Matrix2d;
-using MatrixXd = Eigen::MatrixXd;
-using Vertices = std::vector<Vector2d>;
+#include "sdf.hpp"
 
 double compute_distance(const Vector2d &p, const Vector2d &v0,
                         const Vector2d &v1) {

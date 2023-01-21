@@ -11,7 +11,9 @@ find_package(Eigen3 REQUIRED)
 ADD_DEFINITIONS(-DEIGEN_NO_DEBUG)
 include_directories(${EIGEN3_INCLUDE_DIR})
 
+add_library(sdf2d STATIC sdf.cpp)
+
 find_package(GTest REQUIRED)
 add_executable(test_sdf test.cpp)
 target_include_directories(test_sdf PUBLIC ${GTEST_INCLUDE_DIRS})
-target_link_libraries(test_sdf ${GTEST_LIBRARIES} pthread)
+target_link_libraries(test_sdf ${GTEST_LIBRARIES} pthread sdf2d)
