@@ -1,4 +1,6 @@
-## tiny 2d sdf generation library
+## sdf2dgen
+
+simple 2-dimensional sdf generation library
 
 Usage (see `demo.cpp`)
 ```c++
@@ -27,4 +29,17 @@ int main() {
       compute_sdf(lb, ub, nx, ny, std::vector<Vertices>{verts}, true);
   std::cout << mat << std::endl;
 }
+```
+
+Running the above code will show computed sd values of each element in the (nx+1, ny+1)-matrix
+```
+0.353553 0.279508     0.25     0.25     0.25     0.25     0.25 0.279508 0.353553
+0.279508 0.176777    0.125    0.125    0.125    0.125    0.125 0.176777 0.279508
+    0.25    0.125        0       -0       -0       -0       -0   -0.125    -0.25
+    0.25    0.125        0   -0.125   -0.125   -0.125       -0    0.125     0.25
+    0.25    0.125        0   -0.125    -0.25   -0.125       -0    0.125     0.25
+    0.25    0.125        0   -0.125   -0.125   -0.125       -0    0.125     0.25
+    0.25    0.125        0        0        0        0        0   -0.125    -0.25
+0.279508 0.176777    0.125    0.125    0.125    0.125    0.125 0.176777 0.279508
+0.353553 0.279508     0.25     0.25     0.25     0.25     0.25 0.279508 0.353553
 ```
