@@ -13,6 +13,9 @@ include_directories(${EIGEN3_INCLUDE_DIR})
 
 add_library(sdf2d STATIC sdf.cpp)
 
+add_executable(demo demo.cpp)
+target_link_libraries(demo sdf2d)
+
 find_package(GTest REQUIRED)
 add_executable(test_sdf test.cpp)
 target_include_directories(test_sdf PUBLIC ${GTEST_INCLUDE_DIRS})
