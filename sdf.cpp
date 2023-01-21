@@ -124,6 +124,11 @@ Eigen::MatrixXd compute_sdf(const Eigen::Vector2d &lb,
     if (coefs.size() == 0) {
       continue;
     }
+    if (coefs.size() % 2 == 1) {
+      // FIXME: this should not happen
+      // but continue here as workaround
+      continue;
+    }
 
     size_t coef_idx = 0;
     bool is_positive = true;
