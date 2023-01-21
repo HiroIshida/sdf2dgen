@@ -7,13 +7,13 @@
 
 using Vector2d = Eigen::Vector2d;
 using Matrix2d = Eigen::Matrix2d;
-using AnyMatrix = Eigen::MatrixXd;
+using MatrixXd = Eigen::MatrixXd;
 using Vertices = std::vector<Vector2d>;
 
 double compute_distance(const Vector2d &p, const Vector2d &v0,
                         const Vector2d &v1) {
   const auto diff = v1 - v0;
-  const double t = (p - v0).dot(diff) / diff.norm();
+  const double t = (p - v0).dot(diff) / diff.dot(diff);
   if (t < 0.0) {
     return (p - v0).norm();
   } else if (t > 1.0) {
@@ -73,7 +73,7 @@ std::optional<double> find_intersection_coef(const Vector2d &p0,
   const auto st = m.inverse() * (p0 - q0);
   const double s = st(0);
   const double t = st(1);
-  if ((t >= 0 && t < 1.0) && (s >= 0 && s <= 1.0)) {
+  if (t >= 0 && t < 1.0) {
     return s;
   } else {
     return {};
@@ -101,15 +101,15 @@ find_intersection_coefs(const Vector2d &p0, const Vector2d &p1,
   return coefs;
 }
 
-AnyMatrix compute_sdf(const Vector2d &lb, const Vector2d &ub, size_t nx,
-                      size_t ny, const std::vector<Vertices> &verts_list,
-                      bool make_signed) {
+MatrixXd compute_sdf(const Vector2d &lb, const Vector2d &ub, size_t nx,
+                     size_t ny, const std::vector<Vertices> &verts_list,
+                     bool make_signed) {
   const auto &width = ub - lb;
   const double wx = width(0) / nx;
   const double wy = width(1) / ny;
-  AnyMatrix mat(nx, ny);
-  for (size_t i = 0; i < nx; ++i) {
-    for (size_t j = 0; j < ny; ++j) {
+  MatrixXd mat(nx + 1, ny + 1);
+  for (size_t i = 0; i < nx + 1; ++i) {
+    for (size_t j = 0; j < ny + 1; ++j) {
       auto p = lb;
       p(0) += wx * i;
       p(1) += wy * j;
@@ -121,7 +121,7 @@ AnyMatrix compute_sdf(const Vector2d &lb, const Vector2d &ub, size_t nx,
   }
 
   // determine sign
-  for (size_t i = 0; i < nx; ++i) {
+  for (size_t i = 0; i < nx + 1; ++i) {
     auto p_start = lb;
     p_start(0) += wx * i;
 
@@ -134,10 +134,12 @@ AnyMatrix compute_sdf(const Vector2d &lb, const Vector2d &ub, size_t nx,
 
     size_t coef_idx = 0;
     bool is_positive = true;
-    for (size_t j = 0; j < ny; ++j) {
-      if (j > coefs[coef_idx]) {
-        coef_idx++;
-        is_positive = !is_positive;
+    for (size_t j = 0; j < ny + 1; ++j) {
+      if (coef_idx < coefs.size()) {
+        if (j > coefs[coef_idx]) {
+          coef_idx++;
+          is_positive = !is_positive;
+        }
       }
       if (!is_positive) {
         mat(i, j) *= -1;
