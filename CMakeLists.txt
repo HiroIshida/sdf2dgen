@@ -20,3 +20,8 @@ find_package(GTest REQUIRED)
 add_executable(test_sdf test.cpp)
 target_include_directories(test_sdf PUBLIC ${GTEST_INCLUDE_DIRS})
 target_link_libraries(test_sdf ${GTEST_LIBRARIES} pthread sdf2d)
+
+add_subdirectory(pybind11)
+pybind11_add_module(_pysdf2d wrapper.cpp)
+target_link_libraries(_pysdf2d PRIVATE sdf2d)
+install(TARGETS _pysdf2d DESTINATION .)
