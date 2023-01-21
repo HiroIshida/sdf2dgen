@@ -1,0 +1,5 @@
+*.json
+/build
+/build_release
+/build_debug
+/.cache
